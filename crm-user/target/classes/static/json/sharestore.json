@@ -1,0 +1,15 @@
+﻿{"result":[
+	{
+		"chkVal":"1",
+		"chkDisplay":"全部"
+	},{
+		"chkVal":"2",
+		"chkDisplay":"下拉框选项一"
+	},{
+		"chkVal":"3",
+		"chkDisplay":"下拉框选项二"
+	},{
+		"chkVal":"4",
+		"chkDisplay":"下拉框选项三"
+	}
+]}

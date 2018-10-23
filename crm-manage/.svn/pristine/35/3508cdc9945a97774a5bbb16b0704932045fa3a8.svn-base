@@ -1,0 +1,65 @@
+package com.run.manage.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.run.manage.comm.entity.Pager;
+import com.run.manage.model.TDept;
+import com.run.manage.model.TRole;
+import com.run.manage.model.TUser;
+
+/**
+ * <p>Description: [后台管理--业务人员用户管理持久层接口]</p>
+ * @author fenghao
+ *Created on 2018年10月15日
+ *Copyright (c) 2018 BJRUN
+ */
+@Mapper
+public interface SalesmanUserManagementDao {
+
+	/**
+	 * 获取用户信息列表包含用户所属角色信息
+	 * @return
+	 */
+	public List<TUser> getAllUserList(Pager page);
+
+	/**
+	 * 获取部门ID所属部门信息
+	 * @param deptID：部门ID
+	 * @return
+	 */
+	public TDept getDeptInfoByDeptId(Integer deptID);
+
+	/**
+	 *  查询所有业务人员总数
+	 * @return
+	 */
+	public long getAllUserCount();
+
+	/**
+	 * 根据用户ID查询角色信息
+	 * @param id
+	 * @return
+	 */
+	public List<TRole> getRoleByUserId(Integer id);
+
+	/**
+	 * 修改用户状态
+	 * @param tUser
+	 */
+	public void updateUserStatus(TUser tUser);
+
+	/**
+	 * 获得角色列表
+	 * @return
+	 */
+	public List<TRole> getAllRoleList();
+
+	/**
+	 * 获得部门列表
+	 * @return
+	 */
+	public List<TDept> getAllDeptList();
+
+}

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.run.manage.dao.SuCaiDao">
+
+	<resultMap id="resourceMap" type="com.run.manage.model.YSuCai">
+        <id column="Id" jdbcType="INTEGER" property="Id"></id>
+        <result column="Title" jdbcType="VARCHAR" property="Title" />
+        <result column="Content" jdbcType="INTEGER" property="Content" />
+        <result column="Type" jdbcType="VARCHAR" property="Type" />
+        <result column="CreateTime" jdbcType="DATE" property="CreateTime" />
+        <result column="AddUserID" jdbcType="INTEGER" property="AddUserID" />
+        <result column="UserAccount" jdbcType="VARCHAR" property="UserAccount" />
+        <result column="ModifyTime" jdbcType="DATE" property="ModifyTime" />
+        <result column="BZ" jdbcType="VARCHAR" property="BZ" />        
+    </resultMap>
+	
+	<!--查询所有字段 -->
+	<sql id="selectAllColumns">
+		select
+		Id,
+		Title,
+		Content,
+		Type,
+		CreateTime,
+		AddUserID,
+		UserAccount,
+		ModifyTime,
+		BZ
+		from Y_SUCAI
+	</sql>
+	
+   <!--分页 -->
+	<sql id="pagination_tail">
+		limit #{page.pageOffset} , #{page.rows}
+	</sql>
+	
+   <!--数量 -->
+	<sql id="count_Tail">
+		select count(*) from Y_SUCAI 
+	</sql>
+	
+   <!--查询条件 -->
+	<sql id="where_fragement">
+		<where>
+			<if test="entity != null">
+				<if test="entity.Id != null and entity.Id != ''">
+					and Id = #{entity.Id}
+				</if>				
+				<if test="entity.Title != null and entity.Title != ''">
+					and Title LIKE CONCAT('%',#{entity.Title},'%' )
+				</if>
+				<if test="entity.Content != null and entity.Content != ''">
+				    and Content LIKE CONCAT('%',#{entity.Content},'%' )
+				</if>
+				<if test="entity.UserAccount != null and entity.UserAccount != ''">
+				    and UserAccount LIKE CONCAT('%',#{entity.UserAccount},'%' )
+				</if>
+				<if test="entity.Type != null and entity.Type != ''">
+				    and Type = #{entity.Type}
+				</if>
+				<if test="entity.BZ != null and entity.BZ != ''">
+					and BZ = #{entity.BZ}
+				</if>
+			</if>
+		</where>
+	</sql>
+	
+	<!--分页查询 -->
+	<select id="queryList" resultMap="resourceMap">
+		<include refid="selectAllColumns" />
+		<include refid="where_fragement" />
+		<if test="page!=null">
+			<include refid="pagination_tail" />
+		</if>
+	</select>
+	
+   <!--数量查询 -->
+	<select id="queryCount" resultType="java.lang.Long">
+		<include refid="count_Tail"></include>
+		<include refid="where_fragement" />
+	</select>
+	  
+   <!--根据id查询 -->
+	<select id="queryById" resultMap="resourceMap">
+		<include refid="selectAllColumns" />
+		where Id = #{Id}
+	</select>
+	
+	<!-- 根据id删除 -->
+	<select id="delete" parameterType="Integer">
+		delete from 
+			Y_SUCAI 
+		where 
+			Id = #{id}
+	</select>
+	
+	<!--任务类型查询-->
+	<select id="queryTypeList" resultType="java.lang.String"> 
+		SELECT ParamName  FROM T_PARAMETER WHERE ParamKey = 'OPER_MATERIA_CLASSIFY'
+	</select>
+	
+</mapper>

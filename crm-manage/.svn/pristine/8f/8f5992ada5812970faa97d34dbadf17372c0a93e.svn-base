@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.run.manage.dao.SalesmanUserManagementDao">
+    
+    
+    <resultMap type="com.run.manage.model.TUser" id="getTestUserListRM">
+    
+    	<id property="id" column="id"/>
+    	<result property="account" column="account"/>
+    	<result property="userName" column="userName"/>
+    	<result property="status" column="status"/>
+    	<!-- 配置一对一 -->
+    	<association property="dept" javaType="com.run.manage.model.TDept">
+    		<result property="deptName" column="deptName"/>
+    	</association>
+    	<!-- 配置一对多关系 -->
+    	<collection property="roles" ofType="com.run.manage.model.TRole">
+    		<result property="roleName" column="roleName"/>
+    	</collection>
+    	
+    	
+    </resultMap>
+    
+    <select id="getAllUserList" parameterType="com.run.manage.comm.entity.Pager" resultMap="getTestUserListRM">
+							SELECT
+							u.id,
+							u.account,
+							u.userName,
+							IFNULL(GROUP_CONCAT(r.`RoleName` SEPARATOR ','),'未分配') roleName,
+  							IFNULL(d.deptName,'未分配') deptName ,
+							u.`status`
+							FROM
+							T_USER u
+							LEFT JOIN T_USER_ROLE ur
+							ON u.`Id` = ur.`UserID`
+							LEFT JOIN T_ROLE r
+							ON ur.`RoleID` = r.`Id`
+							LEFT JOIN T_DEPT d
+							ON u.deptID = d.`Id`
+							<where >
+								<if test="t.account !=null and t.account !='' ">
+									u.account = #{t.account}
+								</if>
+								
+								<if test="t.userName !=null and t.userName !='' ">
+									AND u.userName LIKE CONCAT("%",#{t.userName},"%")
+								</if>
+								
+								<if test="t.status !=0">
+									AND u.status = #{t.status}
+								</if>
+								
+								<if test="t.deptID !=0 and t.deptID !=null">
+									AND d.id = #{t.deptID}
+								</if>
+								
+								<if test="t.roleID !=0 and t.roleID !=null">
+									AND r.id = #{t.roleID}
+								</if>
+							AND u.isDelete=1
+							AND u.userType='1'
+							</where>
+							GROUP BY u.id
+							ORDER BY u.`CreateTime` DESC
+							LIMIT #{pageOffset} , #{rows}
+    </select>
+    
+    <select id="getAllUserCount"  parameterType="com.run.manage.comm.entity.Pager"  resultType="long">
+									SELECT
+									COUNT(*)
+									FROM(
+									SELECT
+									u.id,
+									u.account,
+									u.userName,
+									IFNULL(GROUP_CONCAT(r.`RoleName` SEPARATOR ','),'未分配') roleName,
+ 								    IFNULL(d.deptName,'未分配') deptName ,
+									u.`status`
+									FROM
+									T_USER u
+									LEFT JOIN T_USER_ROLE ur
+									ON u.`Id` = ur.`UserID`
+									LEFT JOIN T_ROLE r
+									ON ur.`RoleID` = r.`Id`
+									LEFT JOIN T_DEPT d
+									ON u.deptID = d.`Id`
+								<where >
+								<if test="t.account !=null and t.account !='' ">
+									u.account = #{t.account}
+								</if>
+								
+								<if test="t.userName !=null and t.userName !='' ">
+									AND u.userName LIKE CONCAT("%",#{t.userName},"%")
+								</if>
+								
+								<if test="t.status !=0">
+									AND u.status = #{t.status}
+								</if>
+								
+								<if test="t.deptID !=0 and t.deptID !=null">
+									AND d.id = #{t.deptID}
+								</if>
+								
+								<if test="t.roleID !=0 and t.roleID !=null">
+									AND r.id = #{t.roleID}
+								</if>
+							AND u.isDelete=1
+							AND u.userType='1'	
+							</where>
+									GROUP BY u.id ) temp
+    </select>
+  
+    <!-- 更新用户状态 -->
+    <update id="updateUserStatus" parameterType="com.run.manage.model.TUser">
+    	UPDATE T_USER u SET u.`status` = #{status} WHERE u.`Id`=#{id};
+    </update>
+    
+    <!-- 查询所有角色列表 -->
+    <select id="getAllRoleList" resultType="com.run.manage.model.TRole">
+					SELECT
+					r.id,
+					r.roleName
+					FROM
+					T_ROLE r 
+    </select>
+    
+    <!-- 查询所有部门列表 -->
+    <select id="getAllDeptList" resultType="com.run.manage.model.TDept">
+							SELECT
+							d.id,
+							d.deptName
+							FROM
+							T_DEPT d 
+    </select>
+    
+    <!-- 查询所有地区列表 -->
+    <select id="getAllRegionList" resultType="com.run.manage.model.TRegion">
+							SELECT
+							r.id,
+							r.regionName
+							FROM
+							T_REGION r 
+    </select>
+    
+    
+    <!-- 校验account/userCode是否唯一 -->
+    <select id="checkUnique" parameterType="java.util.Map" resultType="java.lang.Long">
+    	SELECT COUNT(*) FROM T_USER u WHERE  ${key} =#{value}
+    </select>
+    
+    <insert id="addUser" parameterType="com.run.manage.model.TUser" useGeneratedKeys="true" keyProperty="id">
+    	INSERT INTO T_USER (
+ 										 account,password, telephone,mobileN,extenNumber,userCode, userName,gender,
+  										deptID,regionID,createTime,identityCode,job,userType) 
+										VALUES
+  										(
+    									#{account},#{password},#{telephone},
+    									<choose>
+    										<when test="mobileN !=null">
+    											#{mobileN},
+    										</when>
+    										<otherwise>
+    											NULL,
+    										</otherwise>
+    									</choose>
+    									<choose>
+    										<when test="extenNumber !=null">
+    											#{extenNumber},
+    										</when>
+    										<otherwise>
+    											NULL,
+    										</otherwise>
+    									</choose>
+    									<choose>
+    										<when test="userCode !=null">
+    											#{userCode},
+    										</when>
+    										<otherwise>
+    											NULL,
+    										</otherwise>
+    									</choose>
+    									#{userName},#{gender},
+    									<choose>
+    										<when test="deptID !=null">
+    											#{deptID},
+    										</when>
+    										<otherwise>
+    											NULL,
+    										</otherwise>
+    									</choose>
+   										<choose>
+    										<when test="regionID !=null">
+    											#{regionID},
+    										</when>
+    										<otherwise>
+    											NULL,
+    										</otherwise>
+    									</choose>
+   										 #{createTime},
+    									<choose>
+    										<when test="identityCode !=null">
+    											#{identityCode},
+    										</when>
+    										<otherwise>
+    											NULL,
+    										</otherwise>
+    									</choose>
+    									<choose>
+    										<when test="job !=null">
+    											#{job},
+    										</when>
+    										<otherwise>
+    											NULL,
+    										</otherwise>
+    									</choose>
+    									'1'
+  )
+    </insert>
+    <!-- 为新增用户分配角色 -->
+    <insert id="addRoleForUser" parameterType="com.run.manage.model.TUser">
+    	INSERT INTO T_USER_ROLE(userID,roleID) VALUES(#{id},#{roleID});
+    </insert>
+    
+</mapper>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.run.manage.dao.TaskDao">
+    <resultMap id="resourceMap" type="com.run.manage.model.YTask">
+        <id column="Id" jdbcType="BIGINT" property="id"></id>
+        <result column="TaskTitle" jdbcType="VARCHAR" property="taskTitle" />
+        <result column="TaskDesc" jdbcType="VARCHAR" property="taskDesc" />
+        <result column="TaskType" jdbcType="INTEGER" property="taskType" />
+        <result column="CreateTime" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="AddUserID" jdbcType="BIGINT" property="addUserId" />
+        <result column="FilePath" jdbcType="VARCHAR" property="filePath" />
+        <result column="FatieEndTime" jdbcType="TIMESTAMP" property="fatieEndTime" />
+        <result column="PinglunEndTime" jdbcType="TIMESTAMP" property="pinglunEndTime" />
+        <result column="Status" jdbcType="INTEGER" property="status" />
+    </resultMap>
+	
+	<!--查询所有字段 -->
+	<sql id="selectAllColumns">
+		select
+		t.id,
+		t.taskcode,
+		t.TaskTitle,
+		t.TaskDesc,
+		p.ParamName as TaskType,
+		t.CreateTime,
+		t.AddUserID,
+		t.filePath,
+		t.FatieEndTime,
+		t.PinglunEndTime,
+		t.Status,
+		yp.YpyCount,
+		count(distinct d.FatieUserAccount) as WpyCount,
+		count(DISTINCT d.FatieDesc) as Pian,
+		count(d.id) as Fen
+		from Y_TASK_FATIE t
+		LEFT JOIN Y_DATA_FATIE d
+		on t.id = d.TaskID
+		LEFT JOIN T_PARAMETER p
+		on t.TaskType = p.ParamType
+		LEFT JOIN (select
+		f.TaskID,
+		count(f.id) as YpyCount
+		from  Y_DATA_YUEPING y
+		LEFT JOIN Y_DATA_FATIE f
+		on f.id=y.FatieID
+		GROUP BY f.TaskID) yp
+		on d.TaskID=yp.TaskID
+
+	</sql>
+	
+   <!--分页 -->
+	<sql id="pagination_tail">
+		limit #{page.pageOffset} , #{page.rows}
+	</sql>
+	
+   <!--数量 -->
+	<sql id="count_Tail">
+		select count(*) from Y_TASK_FATIE
+	</sql>
+	
+   <!--查询条件 -->
+	<sql id="where_fragement">
+		<where>
+			<if test="entity != null">
+				<if test="entity.id != null and entity.id != ''">
+					and Id = #{entity.id}
+				</if>				
+				<if test="entity.taskTitle != null and entity.taskTitle != ''">
+					and TaskTitle LIKE CONCAT('%',#{entity.taskTitle},'%' )
+				</if>
+				<if test="entity.taskType != null and entity.taskType != ''">
+				    and TaskType = #{entity.taskType}
+				</if>
+				<if test="entity.createTime != null and entity.createTime != ''">
+				    and CreateTime =#{entity.createTime}
+				</if>
+				<if test="entity.addUserId != null and entity.addUserId != ''">
+				    and AddUserID = #{entity.addUserId}
+				</if>
+				<if test="entity.fatieEndTime != null and entity.fatieEndTime != ''">
+					and FatieEndTime = #{entity.fatieEndTime}
+				</if>
+				<if test="entity.pinglunEndTime != null and entity.pinglunEndTime != ''">
+					and PinglunEndTime = #{entity.pinglunEndTime}
+				</if>
+				<if test="entity.status != null and entity.status != ''">
+					and Status = #{entity.status}
+				</if>
+			</if>
+		</where>
+	</sql>
+	
+	<!--分页查询 -->
+	<select id="queryList" resultMap="resourceMap">
+		<include refid="selectAllColumns" />
+		GROUP BY id
+		<if test="page!=null">
+			<include refid="pagination_tail" />
+		</if>
+	</select>
+	
+   <!--数量查询 -->
+	<select id="queryCount" resultType="java.lang.Long">
+		<include refid="count_Tail"></include>
+		<include refid="where_fragement" />
+	</select>
+	  
+   <!--根据id查询 -->
+	<select id="queryById" resultMap="resourceMap">
+		<include refid="selectAllColumns" />
+		where t.id = #{id}
+	</select>
+
+	<!--任务类型查询-->
+	<select id="queryTypeList" resultType="com.run.manage.comm.entity.ComboBox">
+		SELECT ParamType as chkVal,ParamName as chkDisplay  FROM T_PARAMETER WHERE ParamKey = 'oper_task_classify'
+	</select>
+
+	<!--网评员完成情况查询-->
+	<select id="queryWpyFatie" resultType="java.util.HashMap">
+		select
+		count(distinct FatieUserAccount) as Wpy,
+		count(DISTINCT FatieDesc) as Pian,
+		count(id) as Fen
+		from Y_DATA_FATIE
+		WHERE TaskID = #{id}
+	</select>
+
+	<!--阅评员阅评情况查询-->
+	<select id="queryYpyRead" resultType="java.util.HashMap">
+		SELECT ParamType as chkVal,ParamName as chkDisplay  FROM T_PARAMETER WHERE ParamKey = 'oper_task_classify'
+	</select>
+
+	<!--新建任务-->
+	<insert id="add" parameterType="com.run.manage.model.YTask">
+		INSERT INTO Y_TASK_FATIE
+		(TaskTitle, TaskDesc, TaskType, CreateTime, AddUserId, `FilePath`, `FatieEndTime`, `PinglunEndTime`, `Status`)
+		VALUES (#{taskTitle}, #{taskDesc}, #{taskType}, #{createTime}, #{addUserId}, #{filePath}, #{fatieEndTime}, #{pinglunEndTime}, #{status});
+	</insert>
+
+    <!--编辑任务-->
+    <update id="update" parameterType="com.run.manage.model.YTask">
+        UPDATE Y_TASK_FATIE set TaskTitle=#{taskTitle},TaskDesc=#{taskDesc},TaskType=#{taskType},filePath,FatieEndTime=#{fatieEndTime},PinglunEndTime=#{pinglunEndTime},status=#{status} where id=#{id}
+    </update>
+	
+	<!--发帖内容和评分查询-->
+	<select id="queryFatieScore" resultType="com.run.manage.model.FatieScore">
+		select
+		f.FatieUserAccount,
+		f.FatieTitle,
+		f.FatieDesc,
+		y.score
+		from  Y_DATA_FATIE f
+		LEFT JOIN Y_DATA_YUEPING y
+		on f.id=y.FatieID
+		LEFT JOIN Y_TASK_FATIE t
+		on t.id=f.TaskID
+		where t.id=#{id}
+	</select>
+    
+</mapper>

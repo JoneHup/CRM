@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.run.manage.dao.SalesmanUserManagementDao">
+    
+    
+    <!-- 获取用户信息列表-->
+    <select id="getAllUserList"  parameterType="com.run.manage.comm.entity.Pager"  resultType="com.run.manage.model.TUser" >
+				SELECT
+				u.id ,
+				u.account,
+				u.userName,
+				u.`status`,
+				u.deptID
+				FROM
+				T_USER u
+				WHERE u.UserType = '1'  limit #{pageOffset} , #{rows}
+    </select>
+    
+    <!-- 根据部门ID获取部门信息 -->
+    <select id="getDeptInfoByDeptId"  parameterType="Integer" resultType="com.run.manage.model.TDept">
+    	SELECT deptName FROM  T_DEPT WHERE id=#{deptID};
+    </select>
+    
+    <!-- 根据用户ID查询角色信息 -->
+    <select id="getRoleByUserId" parameterType="Integer" resultType="com.run.manage.model.TRole">
+				SELECT
+				r.id,
+				r.roleName
+				FROM
+				T_USER_ROLE ur
+				LEFT JOIN T_ROLE r
+				ON ur.`RoleID` = r.`Id`
+				WHERE ur.`UserID` = #{id}
+    </select>
+    
+    <!-- 查询所有业务人员总数 -->
+    <select id="getAllUserCount" resultType="Long">
+    	SELECT COUNT(*) FROM  T_USER WHERE userType='1';
+    </select>
+    
+    <update id="updateUserStatus" parameterType="com.run.manage.model.TUser">
+    	UPDATE T_USER u SET u.`status` = #{status} WHERE u.`Id`=#{id};
+    </update>
+    
+    <!-- 查询所有角色列表 -->
+    <select id="getAllRoleList" resultType="com.run.manage.model.TRole">
+					SELECT
+					r.id,
+					r.roleName
+					FROM
+					T_ROLE r 
+    </select>
+    
+    <!-- 查询所有部门列表 -->
+    <select id="getAllDeptList" resultType="com.run.manage.model.TDept">
+							SELECT
+							d.id,
+							d.deptName
+							FROM
+							T_DEPT d 
+    </select>
+    
+</mapper>

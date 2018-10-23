@@ -1,0 +1,80 @@
+package com.run.user.depend;
+
+import feign.*;
+import feign.codec.Decoder;
+import feign.codec.ErrorDecoder;
+import feign.jackson.JacksonDecoder;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.Map;
+
+/**
+ * @Description TODO
+ * @Author hp
+ * @Date 2018/10/22 20:16
+ * @Version 1.0
+ **/
+@Component
+public class FeignTemplateClient {
+
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    interface FeignClientInterface {
+
+        static FeignClientInterface connect() {
+            Decoder decoder = new JacksonDecoder();
+            return Feign.builder()
+                    .decoder(decoder)
+                    .errorDecoder(new FeignClientErrorDecoder(decoder))
+                    .logger(new Logger.ErrorLogger())
+                    .logLevel(Logger.Level.BASIC)
+                    .target(FeignClientInterface.class, "http://localhost:9090/manage");
+        }
+
+        @RequestLine("GET /add/{a}/{b}")
+        Integer add(@Param("a") Integer a, @Param("b") Integer b);
+
+        @RequestLine("POST /getMap")
+        Map<String , Object> getMap(String name);
+    }
+
+    static class FeignClientInterfaceError extends RuntimeException {
+        private String message; // parsed from json
+
+        @Override
+        public String getMessage() {
+            return message;
+        }
+    }
+
+    static class FeignClientErrorDecoder implements ErrorDecoder {
+
+        final Decoder decoder;
+        final ErrorDecoder defaultDecoder = new ErrorDecoder.Default();
+
+        FeignClientErrorDecoder(Decoder decoder) {
+            this.decoder = decoder;
+        }
+
+        @Override
+        public Exception decode(String methodKey, Response response) {
+            try {
+                return (Exception) decoder.decode(response, FeignClientErrorDecoder.class);
+            } catch (IOException fallbackToDefault) {
+                return defaultDecoder.decode(methodKey, response);
+            }
+        }
+    }
+
+    public static Integer add(Integer a , Integer b) {
+        FeignClientInterface client = FeignClientInterface.connect();
+        Integer add = client.add(a, b);
+        return add;
+    }
+
+    public static Map<String , Object> getMap(String name) {
+        FeignClientInterface client = FeignClientInterface.connect();
+        return client.getMap("hello feign");
+    }
+
+}

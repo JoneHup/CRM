@@ -1,0 +1,24 @@
+package com.run.user.common;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+/**
+ * @Description: [];
+ * @Created on 14:09
+ * @Author:[hupeng]
+ * @Copyright (c) 2018/10/23 BJRUN
+ **/
+@Component
+public class Const {
+
+    //后台管理系统地址
+    public static String MANAGE_BASE_PATH;
+
+    @Autowired(required = true)
+    public void setManageBasePath(@Value("${manage.base.path}") String manageBasePath) {
+        MANAGE_BASE_PATH = manageBasePath;
+    }
+
+}

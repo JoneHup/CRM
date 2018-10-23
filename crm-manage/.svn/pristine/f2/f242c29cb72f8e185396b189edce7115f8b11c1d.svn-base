@@ -1,0 +1,44 @@
+package com.run.manage.service;
+
+import com.alibaba.fastjson.JSONObject;
+import com.run.manage.model.TUser;
+
+/**
+ * <p>Description: [后台管理--业务人员用户管理Service接口]</p>
+ * @author fenghao
+ *Created on 2018年10月15日
+ *Copyright (c) 2018 BJRUN
+ */
+public interface SalesmanUserManagementService {
+
+	/**
+	 * 获得后台管理-业务人员管理-用户管理列表数据
+	 * @return
+	 */
+	JSONObject getAllUserList(int currentPage,int pageSize);
+
+	/**
+	 * 修改用户状态
+	 * @param tUser
+	 */
+	void updateUserStatus(TUser tUser);
+
+	/**
+	 * 获得用户状态列表
+	 * @return
+	 */
+	JSONObject getAllStatusList();
+
+	/**
+	 * 获得角色列表
+	 * @return
+	 */
+	JSONObject getAllRoleList();
+
+	/**
+	 * 获得部门列表
+	 * @return
+	 */
+	JSONObject getAllDeptList();
+
+}

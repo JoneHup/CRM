@@ -1,0 +1,41 @@
+<div class="articletaskAlert clearfix">
+		<div class="createContent">
+			<ul class="createList">
+				<li class="clearfix spec_1">
+					<label class="left txt">任务类型：</label>
+					<input type="text" class="left accountInput" />
+				</li>
+				<li class="clearfix spec upBox">
+					<label class="left txt"><em class="orange">*</em>任务平台： </label>
+					<textarea name="" rows="" cols="" style="resize: none;"></textarea>
+				</li>
+				<li class="clearfix spec upBox">
+					<label class="left txt"><em class="orange">*</em>任务url： </label>
+					<input type="text" class="left accountInput" placeholder="请输入任务url"/>
+				</li>
+				<li class="clearfix spec upBox ">
+					<label class="left txt"><em class="orange">*</em>马甲IP： </label>
+					<input type="radio" name="ip" class="left ipInput"/><span class="left">随机IP</span>
+					<input type="radio" name="ip" class="left ipInput"/><span class="left">限定IP</span>
+				</li>
+				<li class="clearfix spec_1">
+					<label class="left txt"><em class="orange">*</em>调用马甲数：</label>
+					<input type="text" class="left accountInput" placeholder="当前可用马甲数"/>
+				</li>
+				<li class="clearfix spec_1">
+					<label class="left txt"><em class="orange">*</em>评论语科：</label>
+					<input type="text" class="left accountInput" placeholder="请输入评论语料"/>
+					<input type="text" class="left accountInput commenttxt" placeholder="请输入评论语料"/>
+				</li>
+				<li class="clearfix spec_1">
+					<label class="left txt"><em class="orange">*</em>任务频率：</label>
+					<div id="cretataskInput_1" class="left"></div>
+				</li>
+			</ul>
+		</div>
+</div>
+
+<script>
+//	var ue = UE.getEditor('editor');
+</script>
+<script type="text/javascript" charset="utf-8" src="js/articletaskAlert.js"></script>

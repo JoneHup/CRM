@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.run.user.dao.NoticeDao">
+    <resultMap id="resourceMap" type="com.run.user.model.YNotice">
+        <id column="id" jdbcType="INTEGER" property="id"></id>
+        <result column="Title" jdbcType="VARCHAR" property="title" />
+        <result column="Content" jdbcType="BLOB" property="content" />
+        <result column="NoticeType" jdbcType="INTEGER" property="noticeType" />
+        <result column="CreateTime" jdbcType="DATE" property="createTime" />
+        <result column="AddUserID" jdbcType="INTEGER" property="addUserId" />
+        <result column="FilePath" jdbcType="VARCHAR" property="filePath" />
+        <result column="UserAccount" jdbcType="VARCHAR" property="userAccount" />
+        <result column="RecomTime" jdbcType="DATE" property="recomTime" />
+        <result column="EndTime" jdbcType="DATE" property="endTime" />        
+    </resultMap>
+	
+	<!--查询所有字段 -->
+	<sql id="selectAllColumns">
+		select
+		id,
+		title,
+		content,
+		noticeType,
+		createTime,
+		AddUserID,
+		filePath,
+		UserAccount,
+		recomTime,
+		endTime
+		from Y_NOTICE
+	</sql>
+	
+   <!--分页 -->
+	<sql id="pagination_tail">
+		limit #{page.pageOffset} , #{page.rows}
+	</sql>
+	
+   <!--数量 -->
+	<sql id="count_Tail">
+		select count(*) from Y_NOTICE 
+	</sql>
+	
+   <!--查询条件 -->
+	<sql id="where_fragement">
+		<where>
+			<if test="entity != null">
+				<if test="entity.id != null and entity.id != ''">
+					and id = #{entity.id}
+				</if>				
+				<if test="entity.title != null and entity.title != ''">
+					and title LIKE CONCAT('%',#{entity.title},'%' )
+				</if>
+				<if test="entity.content != null and entity.content != ''">
+				    and content LIKE CONCAT('%',#{entity.content},'%' )
+				</if>
+				<if test="entity.userAccount != null and entity.userAccount != ''">
+				    and UserAccount LIKE CONCAT('%',#{entity.UserAccount},'%' )
+				</if>
+				<if test="entity.noticeType != null and entity.noticeType != ''">
+				    and noticeType = #{entity.noticeType}
+				</if>
+			</if>
+		</where>
+	</sql>
+	
+	<!--分页查询 -->
+	<select id="queryList" resultMap="resourceMap">
+		<include refid="selectAllColumns" />
+		<include refid="where_fragement" />
+		<if test="page!=null">
+			<include refid="pagination_tail" />
+		</if>
+	</select>
+	
+   <!--数量查询 -->
+	<select id="queryCount" resultType="java.lang.Long">
+		<include refid="count_Tail"></include>
+		<include refid="where_fragement" />
+	</select>
+	  
+   <!--根据id查询 -->
+	<select id="queryById" resultMap="resourceMap">
+		<include refid="selectAllColumns" />
+		where id = #{id}
+	</select>
+    
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.run.sso.dao.RoleDao">
+    <resultMap id="roleMap" type="com.run.sso.model.Role">
+        <id column="id" jdbcType="INTEGER" property="id"></id>
+        <result column="roleName" jdbcType="VARCHAR" property="role_name" />
+        <result column="cityCode" jdbcType="VARCHAR" property="city_code" />
+    </resultMap>
+
+    <select id="queryRoleListByUserId" parameterType="int" resultMap="roleMap">
+        SELECT r.* FROM user_role ur LEFT JOIN role_ r ON ur.`role_id` = r.id WHERE ur.`user_id` = #{id}
+    </select>
+</mapper>

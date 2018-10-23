@@ -1,0 +1,9 @@
+@charset "utf-8";
+.bp-jumb-box{position:fixed;left:0;top:0;width:100%;height:100%;background-color:rgba(0,0,0,0.2);display:none;}
+.bp-jumb-content{position:absolute;left:50%;top:50%;width:280px;margin-left:-140px;margin-top:-120px;background-color:#fff;border-radius:10px;overflow:hidden;padding-top:10px;overflow:hidden;}
+.bp-jumb-title{text-align:center;font-size:16px;color:#333;line-height:20px;}
+.bp-jumb-text{text-align:center;font-size:14px;padding:10px 0;line-height:40px;}
+.bp-jumb-double-btn{border-top:1px solid #ddd;width:100%;display:none;}
+.bp-jumb-angle-btn{border-top:1px solid #ddd;width:100%;color:#5ca8e6 ;text-align:center;font-size:14px;line-height:40px;background-color:#fff;}
+.bp-jumb-double-btn .bp-jumb-btn{border-right:1px solid #ddd;width:50%;box-sizing:border-box;float:left;text-align:center;font-size:14px;line-height:40px;display:block;background-color:#fff;color:#333;}
+.bp-jumb-double-btn .bp-jumb-confirm{color:#5ca8e6 !important;}

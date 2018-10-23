@@ -1,0 +1,31 @@
+package com.run.user.depend;
+
+import feign.Headers;
+import feign.Param;
+import feign.RequestLine;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Map;
+
+/**
+ * @Author hupeng
+ * @Description 服务调用测试接口
+ * @Date 9:37 2018/10/18
+ * @Param
+ * @return 
+ **/
+//@FeignClient(value = "CRM-MANAGE-SERVICE",path = "/manage")
+//@Component
+@Headers({"Accept: application/json", "Content-Type: application/json"})
+public interface FeignTemplateClient {
+
+    @RequestLine("GET /add")
+    Integer add(@Param("a") Integer a, @Param("b") Integer b);
+
+    /*@RequestMapping(method = RequestMethod.POST , value = "/getMap")
+    Map<String , Object> getMap(@RequestBody String name);*/
+}

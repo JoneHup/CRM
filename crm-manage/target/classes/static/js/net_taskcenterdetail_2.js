@@ -1,0 +1,11 @@
+$(function(){
+	$('.write_1').click(function(){
+		$('.writeInputBox_1').show();
+	})
+	$('.write_2').click(function(){
+		$('.writeInputBox_2').show();
+	})
+	$('.write_3').click(function(){
+		$('.writeInputBox_3').show();
+	})
+})

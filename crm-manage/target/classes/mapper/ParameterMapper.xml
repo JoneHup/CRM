@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.run.manage.dao.ParameterDao">
+    <resultMap id="resourceMap" type="com.run.manage.model.Parameter">
+        <id column="id" jdbcType="INTEGER" property="id"></id>
+        <result column="ParamType" jdbcType="VARCHAR" property="paramType" />     
+     	<result column="ParamKey" jdbcType="VARCHAR" property="paramKey" />
+     	<result column="ParamName" jdbcType="VARCHAR" property="paramName" />
+     	<result column="ParamDesc" jdbcType="BLOB" property="paramDesc" />
+        <result column="ModifyTime" jdbcType="TIMESTAMP" property="modifyTime" />
+    </resultMap>
+	
+	<!--查询所有字段 -->
+	<sql id="selectAllColumns">
+		select
+		id,
+		paramType,
+		paramKey,
+		paramName,
+		paramDesc,		
+		ModifyTime
+		from T_PARAMETER
+	</sql>
+	  	
+   <!--数量 -->
+	<sql id="count_Tail">
+		select count(*) from Y_NOTICE 
+	</sql>
+	
+	<!--查询条件 -->
+	<sql id="where_fragement">
+		<where>
+			<if test="entity != null">								
+				<if test="entity.paramType != null and entity.paramType != ''">
+					and paramType LIKE CONCAT(#{entity.paramType},'%' )
+				</if>
+				<if test="entity.paramName != null and entity.paramName != ''">
+				    and paramName = #{entity.paramName}
+				</if>	
+				<if test="entity.paramKey != null and entity.paramKey != ''">
+					and paramKey LIKE CONCAT(#{entity.paramKey},'%' )
+				</if>	
+				<if test="entity.paramDesc != null and entity.paramDesc != ''">
+					and paramDesc LIKE CONCAT(#{entity.paramDesc},'%' )
+				</if>			
+			</if>
+		</where>
+	</sql>
+	
+	<!--按照修改时间进行倒序 数据查询 -->
+	<select id="queryList" resultMap="resourceMap">
+		<include refid="selectAllColumns" />
+		<include refid="where_fragement" />
+		 ORDER BY ModifyTime DESC		
+	</select>
+	
+  	<delete id="deleteParam" parameterType="com.run.manage.model.Parameter">
+  		DELETE FROM t_parameter 
+  		<include refid="where_fragement" />
+  	</delete>
+  
+  
+   
+</mapper>

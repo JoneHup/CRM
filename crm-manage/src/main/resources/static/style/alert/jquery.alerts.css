@@ -1,0 +1,129 @@
+/*#popup_container {
+	font-family: Arial, sans-serif;
+	font-size: 13px;
+	width:460px;
+	height:215px;
+	z-index:99999;
+	background: #FFF;
+	margin:125px auto;
+	color: #000;
+	left:0;
+	right:0;
+	box-sizing:border-box;
+	box-shadow:0px 1px 13px 0px #b3bbc2;
+	padding:25px;
+}*/
+
+/*#popup_title {
+	
+	margin-top:80px;
+	vertical-align:top;
+	
+	text-align:center;
+	letter-spacing:1px;
+	
+	
+}
+
+#popup_content {
+	font-size: 15px;
+	
+	padding-left:100px;
+	color: #7e8a93;
+}
+
+
+
+#popup_message {
+	padding-left: 48px;
+}
+
+#popup_panel {
+	margin-top:50px;
+	margin-left:300px;
+}
+
+#popup_prompt {
+	margin: .5em 0em;
+}*/
+#popup_ok {
+	border: 1px solid #dbe6ed;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	width: 80px;
+	height: 25px;
+	font-family: "Microsoft YaHei";
+	background: #FFF;
+	color: #000;
+	font-size: 13px;
+	margin-left: -60px;
+	float: right
+}
+
+#popup_ok:hover {
+	color: #FFF;
+	background: #00decf;
+	cursor: pointer;
+	border: 1px solid #00decf;
+}
+
+#popup_cancel {
+	border: 1px solid #dbe6ed;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	width: 80px;
+	height: 25px;
+	font-family: "Microsoft YaHei";
+	background: #FFF;
+	color: #000;
+	font-size: 13px;
+	/*//    margin-left: -60px;*/
+	margin-right: 75px;
+	float: right;
+}
+
+#popup_cancel:hover {
+	color: #FFF;
+	background: #00decf;
+	cursor: pointer;
+	border: 1px solid #00decf;
+}
+
+.favorite {
+	width: 460px !important;
+	height: 215px !important;
+	margin: 125px auto !important;
+	position: fixed;
+	background-color: white;
+	z-index: 99999;
+	left: 0 !important;
+	right: 0 !important;
+	box-shadow: 0px 1px 13px 0px #b3bbc2 !important;
+	padding: 25px !important;
+	box-sizing: border-box !important
+}
+
+div.favorite span {
+	font-size: 14px;
+	color: #7e8a93;
+}
+
+.favorite h1 {
+	display: none
+}
+
+div.favorite span.favorite_content {
+	display: block;
+	padding: 50px 0;
+	text-align: center;
+	font-size: 15px;
+	vertical-align: top;
+	line-height: 20px
+}
+
+div.favorite button {
+	float: right;
+	margin-right: 10px
+}
